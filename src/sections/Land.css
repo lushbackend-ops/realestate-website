@@ -1,0 +1,62 @@
+.land-section {
+  padding: var(--space-2xl) var(--space-lg);
+  background-color: var(--color-bg);
+}
+
+.land-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--space-xl);
+  align-items: center;
+}
+
+.land-text {
+  max-width: 500px;
+}
+
+.section-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: var(--space-md);
+}
+
+.land-heading {
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  margin-bottom: var(--space-md);
+  color: var(--color-text);
+}
+
+.land-description {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+.land-image-wrapper {
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.land-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transform-origin: center center;
+}
+
+@media (max-width: 1024px) {
+  .land-container {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+  .land-section {
+    padding: var(--space-xl) var(--space-md);
+  }
+}

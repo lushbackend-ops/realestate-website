@@ -1,0 +1,65 @@
+.hero-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.hero-video-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  /* Made brighter by removing dimming */
+  transform: scale(1.4) translateX(5%);
+  /* Scaled and shifted right */
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Reduced the dark gradient significantly to make the video pop */
+  background: linear-gradient(to bottom, rgba(21, 21, 21, 0.0) 0%, rgba(21, 21, 21, 0.3) 100%);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  padding: var(--space-md);
+  max-width: var(--max-width);
+  margin-top: 10vh;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 6vw, 6rem);
+  margin-bottom: var(--space-xl);
+  color: var(--color-bg);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}

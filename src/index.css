@@ -1,0 +1,87 @@
+:root {
+  /* Colors */
+  --color-bg: #D1DED1; /* Deeper Sage Green */
+  --color-surface: #E3EBE3; /* Soft Green Tint */
+  --color-text: #0E1A11; /* Very Dark Green */
+  --color-muted: #8A9C8A; /* Medium Green Grey */
+  --color-accent: #214026; /* Dark Forest Green */
+  --color-bronze: #748A6D; /* Deep Greenish Bronze */
+  --color-border: rgba(33, 64, 38, 0.15);
+
+  /* Typography */
+  --font-display: 'Instrument Serif', serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+  --space-2xl: 12rem;
+
+  /* Animation */
+  --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-cinematic: cubic-bezier(0.7, 0, 0.3, 1);
+  --duration-fast: 0.2s;
+  --duration-medium: 0.6s;
+  --duration-slow: 1.2s;
+
+  /* Layout */
+  --max-width: 1440px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+  /* Hide scrollbar for IE and Edge */
+  -ms-overflow-style: none;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+img, video {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -57,14 +57,15 @@
 }
 
 .gallery-img {
-  width: 100%;
+  width: 120%;
   height: 100%;
   object-fit: cover;
+  transform: translateX(-10%);
   transition: transform var(--duration-slow) var(--ease-cinematic);
 }
 
 .gallery-img-wrapper:hover .gallery-img {
-  transform: scale(1.05);
+  transform: translateX(-10%) scale(1.05);
 }
 
 /* Text Panel */

@@ -13,7 +13,7 @@ const SiteCharacteristics = () => {
     const ctx = gsap.context(() => {
       if (itemsRef.current) {
         const items = gsap.utils.toArray(itemsRef.current.children);
-        
+
         gsap.fromTo(items,
           { opacity: 0, y: 100 },
           {
@@ -37,23 +37,23 @@ const SiteCharacteristics = () => {
     <section id="characteristics" className="char-section" ref={charRef}>
       <div className="char-container">
         <h2 className="char-title">THE SITE</h2>
-        
+
         <div className="char-grid" ref={itemsRef}>
           <div className="char-item">
             <h3 className="char-value">[AREA SQ.FT]</h3>
             <p className="char-label">PLOT AREA</p>
           </div>
-          
+
           <div className="char-item">
             <h3 className="char-value">[DIRECTION]</h3>
             <p className="char-label">ORIENTATION</p>
           </div>
-          
+
           <div className="char-item">
             <h3 className="char-value">PRIME</h3>
             <p className="char-label">ACCESS</p>
           </div>
-          
+
           <div className="char-item">
             <h3 className="char-value">[STATUS]</h3>
             <p className="char-label">APPROVALS</p>

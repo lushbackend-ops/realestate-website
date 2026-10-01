@@ -6,11 +6,11 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: var(--color-text);
-  color: var(--color-bg);
+  background-color: #000;
+  color: #fff;
 }
 
-.hero-video-wrapper {
+.hero-canvas {
   position: absolute;
   top: 0;
   left: 0;
@@ -19,47 +19,109 @@
   z-index: 1;
 }
 
-.hero-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 1;
-  /* Made brighter by removing dimming */
-  transform: scale(1.4) translateX(5%);
-  /* Scaled and shifted right */
-}
-
 .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* Reduced the dark gradient significantly to make the video pop */
-  background: linear-gradient(to bottom, rgba(21, 21, 21, 0.0) 0%, rgba(21, 21, 21, 0.3) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%);
   z-index: 2;
+  pointer-events: none;
 }
 
 .hero-content {
   position: relative;
   z-index: 3;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.hero-text-block {
   text-align: center;
   padding: var(--space-md);
   max-width: var(--max-width);
-  margin-top: 10vh;
+  pointer-events: auto;
+}
+
+.block-absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
 }
 
 .hero-title {
-  font-size: clamp(3rem, 6vw, 6rem);
-  margin-bottom: var(--space-xl);
-  color: var(--color-bg);
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 1.05;
+  margin-bottom: var(--space-md);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .hero-subtitle {
   font-family: var(--font-body);
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  opacity: 0.8;
+  margin-bottom: var(--space-xl);
+  opacity: 0.9;
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 1rem 2.5rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.btn-primary {
+  background: #fff;
+  color: #000;
+  border: 1px solid #fff;
+}
+
+.btn-primary:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .hero-actions {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .btn {
+    width: 100%;
+  }
 }

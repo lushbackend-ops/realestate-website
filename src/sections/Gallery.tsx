@@ -15,11 +15,13 @@ const Gallery = () => {
       if (!trackRef.current || !sectionRef.current) return;
 
       const panels = gsap.utils.toArray<HTMLElement>('.gallery-panel');
+      const images = gsap.utils.toArray<HTMLImageElement>('.gallery-img');
       const getScrollAmount = () => {
         if (!trackRef.current) return 0;
         return trackRef.current.scrollWidth - window.innerWidth;
       };
 
+      // Main horizontal scroll
       gsap.to(trackRef.current, {
         x: () => -getScrollAmount(),
         ease: 'none',
@@ -36,6 +38,23 @@ const Gallery = () => {
           end: () => `+=${getScrollAmount()}`,
           invalidateOnRefresh: true
         }
+      });
+
+      // Parallax for inner images
+      images.forEach((img) => {
+        gsap.fromTo(img, 
+          { xPercent: -10 },
+          {
+            xPercent: 10,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: () => `+=${getScrollAmount()}`,
+              scrub: true
+            }
+          }
+        );
       });
 
     }, sectionRef);

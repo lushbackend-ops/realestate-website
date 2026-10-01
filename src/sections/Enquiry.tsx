@@ -8,13 +8,13 @@ const Enquiry = () => {
         <img src={ASSETS.images.landscape} alt="Possibility" />
         <div className="enquiry-overlay"></div>
       </div>
-      
+
       <div className="enquiry-content">
         <div className="enquiry-header">
           <h2>Come see the land.</h2>
           <p>Experience the site in person.</p>
         </div>
-        
+
         <form className="enquiry-form">
           <div className="form-group">
             <input type="text" placeholder="Name" required />

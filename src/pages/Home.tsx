@@ -4,6 +4,7 @@ import Land from '../sections/Land';
 import SiteCharacteristics from '../sections/SiteCharacteristics';
 import Location from '../sections/Location';
 import Gallery from '../sections/Gallery';
+import Pricing from '../sections/Pricing';
 import Enquiry from '../sections/Enquiry';
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
       <SiteCharacteristics />
       <Location />
       <Gallery />
+      <Pricing />
       <Enquiry />
     </Layout>
   );

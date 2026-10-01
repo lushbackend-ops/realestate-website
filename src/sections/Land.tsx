@@ -20,18 +20,34 @@ const Land = () => {
         {
           opacity: 1,
           y: 0,
-          duration: 1,
-          ease: "power2.out",
+          duration: 1.2,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: textRef.current,
-            start: "top 80%",
+            start: "top 85%",
+          }
+        }
+      );
+
+      // Cinematic clip-path reveal for image wrapper
+      gsap.fromTo(
+        imageRef.current?.parentElement || [],
+        { clipPath: "inset(20% 10% 20% 10%)" },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 60%",
+            end: "center center",
+            scrub: 1
           }
         }
       );
 
       // Subtle image scale on scroll
       gsap.to(imageRef.current, {
-        scale: 1.05,
+        scale: 1.1,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,

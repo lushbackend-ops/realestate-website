@@ -101,10 +101,7 @@
   height: 500px;
   background-color: var(--color-muted);
   border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.5;
+  overflow: hidden;
 }
 
 @media (max-width: 900px) {

@@ -29,7 +29,7 @@ const Hero = () => {
     const canvas = canvasRef.current;
     const hero = heroRef.current;
     if (!canvas || !hero) return;
-    
+
     const context = canvas.getContext('2d');
     if (!context) return;
 
@@ -63,7 +63,7 @@ const Hero = () => {
       canvas.height = window.innerHeight;
       render();
     };
-    
+
     window.addEventListener('resize', updateCanvasSize);
     updateCanvasSize();
 
@@ -85,26 +85,36 @@ const Hero = () => {
       };
     }
 
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 769px)", () => {
       // Dynamically calculate the scroll length based on frameCount (approx 2.2vh per frame)
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: hero,
           start: "top top",
-          end: `+=${heroScrollPercentage}%`, 
+          end: `+=${heroScrollPercentage}%`,
           scrub: 1, // Smooth scrubbing
           pin: true,
           anticipatePin: 1,
         }
       });
+      
+      // Re-sort the ScrollTriggers by DOM position so that this newly created trigger
+      // gets evaluated before the other sections' triggers (which were created on mount).
+      ScrollTrigger.sort();
 
       // Map the timeline progress directly to frame progression
-      tl.to(scrollObj, {
-        frame: frameCount,
-        ease: "none",
-        duration: frameCount,
-        onUpdate: render,
-      }, 0); // Start at absolute time 0
+      tl.fromTo(scrollObj, 
+        { frame: 1 },
+        {
+          frame: frameCount,
+          ease: "none",
+          duration: frameCount,
+          onUpdate: render,
+        }, 
+        0
+      ); // Start at absolute time 0
 
       // Fade in Text Block 1 after a short scroll (frame 15 to 45)
       tl.fromTo(block1Ref.current,
@@ -145,10 +155,50 @@ const Hero = () => {
         ease: "power2.inOut",
         duration: 30,
       }, Math.max(0, frameCount - 50));
-    }, hero);
+    });
+
+    mm.add("(max-width: 768px)", () => {
+      // Auto-play the image sequence like a video on mobile
+      const tl = gsap.timeline({ repeat: -1, yoyo: true });
+
+      tl.fromTo(scrollObj, 
+        { frame: 1 },
+        {
+          frame: frameCount,
+          ease: "none",
+          duration: 10, // 10 seconds to play through
+          onUpdate: render,
+        }, 
+        0
+      );
+
+      // Fade in Text Block 1
+      tl.fromTo(block1Ref.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, ease: "power2.out", duration: 1 },
+        0.5
+      );
+
+      // Fade out Text Block 1
+      tl.to(block1Ref.current, {
+        opacity: 0, y: -30, ease: "power2.inOut", duration: 1,
+      }, 4);
+
+      // Fade in Text Block 2
+      tl.fromTo(block2Ref.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, ease: "power2.out", duration: 1 },
+        5.5
+      );
+
+      // Fade out Text Block 2
+      tl.to(block2Ref.current, {
+        opacity: 0, y: -30, ease: "power2.inOut", duration: 1,
+      }, 9);
+    });
 
     return () => {
-      ctx.revert();
+      mm.revert();
       window.removeEventListener('resize', updateCanvasSize);
     };
   }, []);
@@ -157,17 +207,17 @@ const Hero = () => {
     <section id="hero" className="hero-section" ref={heroRef}>
       <canvas ref={canvasRef} className="hero-canvas" />
       <div className="hero-overlay"></div>
-      
+
       <div className="hero-content">
         {/* Block 1 (Initial Sequence) */}
         <div className="hero-text-block" ref={block1Ref}>
-          <h1 className="hero-title">FIND YOUR<br/>NEXT ADDRESS</h1>
+          <h1 className="hero-title">FIND YOUR<br />NEXT ADDRESS</h1>
           <p className="hero-subtitle">Exceptional spaces. Thoughtfully selected.</p>
         </div>
 
         {/* Block 2 (Second Sequence) */}
         <div className="hero-text-block block-absolute" ref={block2Ref}>
-          <h1 className="hero-title">A NEW LEVEL<br/>OF PRESTIGE</h1>
+          <h1 className="hero-title">A NEW LEVEL<br />OF PRESTIGE</h1>
           <p className="hero-subtitle">Architecture that speaks to the landscape.</p>
         </div>
       </div>

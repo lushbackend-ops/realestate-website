@@ -1,100 +1,228 @@
+/* Enquiry.css - Apple-Grade Consultation Form */
 .enquiry-section {
+  background-color: var(--color-off-white);
+  border-top: 1px solid var(--color-border);
   position: relative;
-  min-height: 90vh;
+}
+
+.enquiry-card-wrapper {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card-hover);
+  padding: clamp(var(--space-6), 5vw, var(--space-8));
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.enquiry-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto var(--space-7);
+}
+
+.enquiry-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 4.2vw, 3.2rem);
+  color: var(--color-maroon);
+  font-weight: 500;
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-2);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+}
+
+.enquiry-body-copy {
+  font-size: 1.05rem;
+  line-height: 1.68;
+  color: var(--color-muted);
+}
+
+.form-error-banner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--color-bg);
-}
-
-.enquiry-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.enquiry-bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.enquiry-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(21, 21, 21, 0.7);
-}
-
-.enquiry-content {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: 500px;
-  padding: var(--space-xl) var(--space-lg);
-  text-align: center;
-}
-
-.enquiry-header h2 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  margin-bottom: var(--space-sm);
-}
-
-.enquiry-header p {
-  font-family: var(--font-body);
-  font-size: 1.1rem;
-  letter-spacing: 0.05em;
-  opacity: 0.8;
-  margin-bottom: var(--space-xl);
+  gap: 12px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm);
+  color: #991b1b;
+  padding: 12px 16px;
+  font-size: 0.88rem;
+  margin-bottom: var(--space-5);
 }
 
 .enquiry-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-5);
 }
 
-.form-group input {
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+@media (min-width: 720px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-input-group label {
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.form-input-group .req {
+  color: var(--color-maroon);
+}
+
+.form-input-group .opt {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon .field-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--color-gold);
+  pointer-events: none;
+}
+
+.input-with-icon input,
+.input-with-icon select,
+.form-input-group textarea {
   width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(244, 241, 234, 0.3);
-  padding: var(--space-sm) 0;
-  color: var(--color-bg);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  transition: border-color var(--duration-fast) var(--ease-standard);
-}
-
-.form-group input::placeholder {
-  color: rgba(244, 241, 234, 0.5);
-}
-
-.form-group input:focus {
+  padding: 12px 16px 12px 46px;
+  background-color: var(--color-off-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-dark);
+  font-family: var(--font-sans);
+  font-size: 16px; /* Prevents auto-zoom on iOS Safari */
   outline: none;
-  border-color: var(--color-bg);
+  transition: all var(--transition-fast);
+  min-height: 48px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-.btn-submit {
-  margin-top: var(--space-md);
-  background: var(--color-accent);
-  color: var(--color-surface);
-  border: none;
-  padding: 1rem;
-  font-family: var(--font-body);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: opacity var(--duration-fast) var(--ease-standard), background-color var(--duration-fast);
+.form-input-group textarea {
+  padding: 14px 16px;
+  min-height: 90px;
+  resize: vertical;
 }
 
-.btn-submit:hover {
-  background-color: var(--color-text);
-  opacity: 1;
+.input-with-icon input:focus,
+.input-with-icon select:focus,
+.form-input-group textarea:focus {
+  border-color: var(--color-gold);
+  background-color: var(--color-white);
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.22);
+}
+
+.form-submit-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.btn-submit-enquiry {
+  width: 100%;
+  max-width: 380px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+.consent-text {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  text-align: center;
+  max-width: 460px;
+  line-height: 1.45;
+}
+
+/* Success Card */
+.enquiry-success-card {
+  text-align: center;
+  padding: clamp(var(--space-6), 6vw, var(--space-8)) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fffdf9;
+  border: 1px solid rgba(176, 141, 87, 0.4);
+  border-radius: var(--radius-xl);
+}
+
+.success-icon-wrapper {
+  color: var(--color-gold);
+  margin-bottom: var(--space-3);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: rgba(176, 141, 87, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-title {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  color: var(--color-maroon);
+  margin-bottom: var(--space-2);
+}
+
+.success-description {
+  font-size: 1.05rem;
+  color: var(--color-dark);
+  max-width: 540px;
+  line-height: 1.65;
+  margin-bottom: var(--space-5);
+}
+
+.success-contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-subtle);
+}
+
+.success-contact-pill svg {
+  color: var(--color-gold);
+}
+
+.btn-submit-another {
+  font-size: 0.88rem;
+  padding: 10px 24px;
 }

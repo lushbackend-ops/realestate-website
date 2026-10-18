@@ -1,0 +1,234 @@
+/* PlotSizes.css - Apple-Grade Plot Comparison Table & Infrastructure */
+.plots-section {
+  background-color: var(--color-white);
+  position: relative;
+}
+
+.plots-header {
+  text-align: center;
+  max-width: 740px;
+  margin: 0 auto var(--space-6);
+}
+
+.plots-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 4.2vw, 3.2rem);
+  color: var(--color-maroon);
+  font-weight: 500;
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-2);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+}
+
+.plots-subheading {
+  font-size: 1rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.plots-table-wrapper {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--space-8);
+  overflow: hidden;
+}
+
+.plots-table-header {
+  display: none;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.plots-table-row {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-white);
+  gap: 10px;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.plots-table-row:last-child {
+  border-bottom: none;
+}
+
+.plots-table-row:hover {
+  background-color: #fffdf9;
+}
+
+.mobile-col-label {
+  font-size: 0.74rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 8px;
+}
+
+.size-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--color-maroon);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-off-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 3px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-dark);
+}
+
+.price-tag {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-gold);
+}
+
+.btn-request-price {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.btn-request-price svg {
+  transition: transform var(--transition-fast);
+}
+
+.btn-request-price:hover svg {
+  transform: translateX(3px);
+}
+
+@media (min-width: 768px) {
+  .plots-table-header {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 1.6fr;
+    align-items: center;
+  }
+
+  .plots-table-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 1.6fr;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    gap: var(--space-3);
+  }
+
+  .mobile-col-label {
+    display: none;
+  }
+
+  .btn-request-price {
+    width: auto;
+  }
+}
+
+/* 30-Foot Internal Arterial Roads - Feature Card */
+.plots-roads-feature {
+  background-color: var(--color-off-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: clamp(var(--space-5), 4vw, var(--space-7));
+  box-shadow: var(--shadow-card);
+}
+
+.roads-feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  align-items: center;
+}
+
+@media (min-width: 860px) {
+  .roads-feature-grid {
+    grid-template-columns: 1fr 1.25fr;
+    gap: var(--space-7);
+  }
+}
+
+.roads-image-box {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card-hover);
+  overflow: hidden;
+  background-color: var(--color-surface);
+}
+
+.roads-feature-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-cinematic);
+}
+
+.roads-image-box:hover .roads-feature-img {
+  transform: scale(1.02);
+}
+
+.roads-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--color-gold);
+  margin-bottom: var(--space-2);
+}
+
+.roads-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3.2vw, 2.35rem);
+  color: var(--color-maroon);
+  font-weight: 500;
+  margin-bottom: var(--space-3);
+  line-height: 1.2;
+}
+
+.roads-desc {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--color-muted);
+  margin-bottom: var(--space-4);
+}
+
+.roads-note-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  color: var(--color-dark);
+  box-shadow: var(--shadow-subtle);
+}
+
+.roads-note-pill svg {
+  color: var(--color-gold);
+  flex-shrink: 0;
+}

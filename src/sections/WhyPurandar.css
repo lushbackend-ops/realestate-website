@@ -1,0 +1,93 @@
+/* WhyPurandar.css - Apple-Grade Feature Cards */
+.why-section {
+  background-color: var(--color-white);
+  position: relative;
+}
+
+.why-header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto var(--space-7);
+}
+
+.why-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 4.2vw, 3.2rem);
+  color: var(--color-maroon);
+  font-weight: 500;
+  margin-top: var(--space-2);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+}
+
+.why-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+@media (min-width: 640px) {
+  .why-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .why-cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.why-card {
+  background-color: var(--color-off-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.why-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(176, 141, 87, 0.45);
+  box-shadow: var(--shadow-card-hover);
+  background-color: #fffdf9;
+}
+
+.why-icon-box {
+  color: var(--color-maroon);
+  margin-bottom: var(--space-4);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: rgba(91, 31, 42, 0.06);
+  border: 1px solid rgba(91, 31, 42, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.why-card:hover .why-icon-box {
+  background-color: var(--color-maroon);
+  color: var(--color-white);
+  border-color: var(--color-maroon);
+}
+
+.why-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--color-maroon);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.01em;
+}
+
+.why-card-desc {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-muted);
+}

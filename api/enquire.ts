@@ -18,12 +18,46 @@ const TARGET_EMAIL = 'newpune.backend@gmail.com';
 const TARGET_ALERT_NUMBER = '+919028986499';
 
 export default async function handler(req: any, res: any) {
+  // CORS Headers for Vercel
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const body: LeadPayload = req.body || {};
+    // Robust body parsing for Vercel serverless environments
+    let body: LeadPayload = req.body;
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        body = {} as LeadPayload;
+      }
+    } else if (!body || typeof body !== 'object') {
+      try {
+        const buffers: Uint8Array[] = [];
+        for await (const chunk of req) {
+          buffers.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+        }
+        const raw = Buffer.concat(buffers).toString('utf-8');
+        body = raw ? JSON.parse(raw) : ({} as LeadPayload);
+      } catch {
+        body = {} as LeadPayload;
+      }
+    }
+    body = body || {};
+
     const { type, name, phone, email, plot, date, message, lang } = body;
 
     // Server-side validation
@@ -35,6 +69,7 @@ export default async function handler(req: any, res: any) {
     if (cleanPhone.length < 10) {
       return res.status(400).json({ error: 'Valid 10-digit mobile number is required' });
     }
+
 
     const isoTimestamp = new Date().toISOString();
     const istTime = new Date().toLocaleString('en-IN', {

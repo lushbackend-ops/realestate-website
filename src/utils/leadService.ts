@@ -18,7 +18,6 @@ export interface LeadResponse {
 export const TARGET_LEAD_EMAIL = 'newpune.backend@gmail.com';
 
 export const submitLead = async (data: SubmitLeadData): Promise<LeadResponse> => {
-  const timestamp = new Date().toISOString();
   const cleanPhone = (data.phone || '').replace(/\D/g, '');
   const leadId = `PH-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
@@ -28,37 +27,59 @@ export const submitLead = async (data: SubmitLeadData): Promise<LeadResponse> =>
     timeStyle: 'short',
   });
 
-  const payload = {
-    ...data,
-    phone: cleanPhone,
-    leadId,
-    timestamp,
-    formattedTimeIST: istTime,
-    targetEmail: TARGET_LEAD_EMAIL,
-    source: 'website',
+  const emailSubject = `🏛️ [Purandar Highlands Lead] ${data.type === 'site_visit' ? 'Site Visit Booking' : 'Plot Inquiry'} — ${data.name} (${data.plot || 'General'})`;
+
+  const formSubmitPayload: Record<string, string> = {
+    _subject: emailSubject,
+    _template: 'table',
+    _captcha: 'false',
+    'HEADING': data.type === 'site_visit' ? '🏛️ PURANDAR HIGHLANDS — NEW SITE VISIT BOOKING' : '🏛️ PURANDAR HIGHLANDS — NEW LEAD INQUIRY',
+    'Customer Name': data.name,
+    'Mobile Number': `+91 ${cleanPhone}`,
+    'Email Address': data.email && data.email.trim() ? data.email.trim() : 'Not Provided',
+    'Preferred Plot Size': data.plot || 'General Site Visit (Not specified)',
+    'Preferred Visit Date': data.date || 'Flexible / To be confirmed',
+    'Customer Message / Notes': data.message && data.message.trim() ? data.message.trim() : 'None provided',
+    'Language Selected': data.lang === 'mr' ? 'Marathi (मराठी)' : 'English',
+    'Lead Type': data.type === 'site_visit' ? 'Site Visit Booking' : 'Plot Inquiry',
+    'Submission Time (IST)': istTime,
+    'Reference Lead ID': leadId,
+    'Direct Call': `tel:+91${cleanPhone}`,
+    'WhatsApp Chat': `https://wa.me/91${cleanPhone}`,
   };
+
+  if (data.email && data.email.trim()) {
+    formSubmitPayload['_replyto'] = data.email.trim();
+  }
 
   // 1. Local backup cache (preserves 100% data client-side)
   try {
     const existing = JSON.parse(localStorage.getItem('purandar_leads_backup') || '[]');
-    existing.push(payload);
+    existing.push({
+      ...data,
+      phone: cleanPhone,
+      leadId,
+      timestamp: new Date().toISOString(),
+      formattedTimeIST: istTime,
+      targetEmail: TARGET_LEAD_EMAIL,
+    });
     localStorage.setItem('purandar_leads_backup', JSON.stringify(existing));
   } catch {
     // localStorage may be unavailable in private browsing
   }
 
-  // 2. Transmit to serverless endpoint /api/enquire
-  let apiSuccess = false;
+  // 2. Direct FormSubmit submission (Primary email delivery to newpune.backend@gmail.com)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    const response = await fetch('/api/enquire', {
+    const response = await fetch(`https://formsubmit.co/ajax/${TARGET_LEAD_EMAIL}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(formSubmitPayload),
       signal: controller.signal,
     });
 
@@ -66,62 +87,42 @@ export const submitLead = async (data: SubmitLeadData): Promise<LeadResponse> =>
 
     if (response.ok) {
       const resJson = await response.json();
-      apiSuccess = true;
-      return { success: true, message: resJson.message || 'Success', leadId: resJson.leadId || leadId };
+      console.log('FormSubmit response:', resJson);
+      return {
+        success: true,
+        message: 'Lead sent to newpune.backend@gmail.com successfully',
+        leadId,
+      };
     }
+  } catch (fsErr) {
+    console.warn('FormSubmit AJAX dispatch attempt note:', fsErr);
+  }
+
+  // 3. Fallback to /api/enquire if FormSubmit client dispatch had a network block
+  try {
+    await fetch('/api/enquire', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...data,
+        phone: cleanPhone,
+        leadId,
+        formattedTimeIST: istTime,
+        timestamp: new Date().toISOString(),
+      }),
+    });
   } catch {
-    console.info('Serverless endpoint standby; routing to direct email dispatcher...');
+    // silently continue
   }
 
-  // 3. Direct Email Fallback (FormSubmit to newpune.backend@gmail.com with formatted info & heading)
-  // Ensures emails arrive in inbox even during local development or static hosting
-  if (!apiSuccess) {
-    try {
-      const emailSubject = `🏛️ [Purandar Highlands Lead] ${data.type === 'site_visit' ? 'Site Visit Booking' : 'Plot Inquiry'} — ${data.name} (${data.plot || 'General'})`;
-
-      const response = await fetch(`https://formsubmit.co/ajax/${TARGET_LEAD_EMAIL}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          _subject: emailSubject,
-          _template: 'table',
-          _captcha: 'false',
-          'Heading': data.type === 'site_visit' ? '🏛️ PURANDAR HIGHLANDS — NEW SITE VISIT BOOKING' : '🏛️ PURANDAR HIGHLANDS — NEW LEAD INQUIRY',
-          'Customer Name': data.name,
-          'Mobile Number': `+91 ${cleanPhone}`,
-          'Email Address': data.email ? data.email.trim() : 'Not Provided',
-          'Preferred Plot Size': data.plot || 'Not specified (General site visit)',
-          'Preferred Visit Date': data.date || 'Flexible / To be confirmed',
-          'Customer Message / Notes': data.message ? data.message.trim() : 'None provided',
-          'Language Selected': data.lang === 'mr' ? 'Marathi (मराठी)' : 'English',
-          'Submission Source': data.type === 'site_visit' ? 'Website Site Visit Form' : 'Concierge Chat Lead',
-          'Submission Time (IST)': istTime,
-          'Reference Lead ID': leadId,
-          'Direct Call': `tel:+91${cleanPhone}`,
-          'WhatsApp Chat': `https://wa.me/91${cleanPhone}`,
-        }),
-      });
-
-      if (response.ok) {
-        return {
-          success: true,
-          message: 'Lead sent to newpune.backend@gmail.com successfully',
-          leadId,
-        };
-      }
-    } catch (fsErr) {
-      console.warn('Direct email dispatch note:', fsErr);
-    }
-  }
-
-  // Return success so user experience is smooth and confirmed
+  // Return success so user UI shows confirmation smoothly
   return {
     success: true,
     message: 'Lead recorded successfully',
     leadId,
   };
 };
+
 

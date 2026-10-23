@@ -247,63 +247,79 @@ export default async function handler(req: any, res: any) {
 </html>
     `;
 
-    // 1. Dispatch via Resend (if configured)
-    const hasResend = process.env.RESEND_API_KEY;
-    if (hasResend) {
+    // 1. Dispatch via Resend (Primary delivery engine)
+    let emailDelivered = false;
+    const resendApiKey = process.env.RESEND_API_KEY;
+
+    if (resendApiKey) {
       try {
-        await fetch('https://api.resend.com/emails', {
+        const fromAddress = process.env.RESEND_FROM || 'Purandar Highlands <onboarding@resend.dev>';
+        const resendRes = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+            'Authorization': `Bearer ${resendApiKey}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: process.env.RESEND_FROM || 'leads@newpune.com',
+            from: fromAddress,
             to: TARGET_EMAIL,
             reply_to: leadRecord.email || undefined,
             subject: emailSubject,
             html: htmlContent,
           }),
         });
+
+        const resendData = await resendRes.json();
+        if (resendRes.ok) {
+          console.log('[Resend Success]: Email dispatched to', TARGET_EMAIL, 'Resend ID:', resendData?.id);
+          emailDelivered = true;
+        } else {
+          console.error('[Resend Error Response]:', JSON.stringify(resendData));
+        }
       } catch (e) {
-        console.error('Error sending Resend email:', e);
+        console.error('[Resend Dispatch Error]:', e);
       }
+    } else {
+      console.warn('[Resend]: RESEND_API_KEY is not defined in environment variables.');
     }
 
-    // 2. Dispatch via FormSubmit fallback for 100% reliable inbox delivery
-    try {
-      await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          _subject: emailSubject,
-          _template: 'table',
-          _captcha: 'false',
-          'Heading': leadRecord.type === 'site_visit' ? '🏛️ PURANDAR HIGHLANDS — NEW SITE VISIT BOOKING' : '🏛️ PURANDAR HIGHLANDS — NEW LEAD INQUIRY',
-          'Customer Name': leadRecord.name,
-          'Mobile Number': `+91 ${cleanPhone}`,
-          'Email Address': leadRecord.email || 'Not Provided',
-          'Preferred Plot Size': leadRecord.plot || 'General Visit / Unspecified',
-          'Preferred Visit Date': leadRecord.date || 'Flexible / To be confirmed',
-          'Message / Notes': leadRecord.message || 'None',
-          'Language': leadRecord.lang === 'mr' ? 'Marathi' : 'English',
-          'Submission Time (IST)': istTime,
-          'Reference Lead ID': leadRecord.id,
-          'Direct Dial': `tel:+91${cleanPhone}`,
-          'WhatsApp Link': `https://wa.me/91${cleanPhone}`,
-        }),
-      });
-    } catch (fsErr) {
-      console.info('FormSubmit backend notification dispatched:', fsErr);
+    // 2. Dispatch via FormSubmit fallback only if Resend was not executed
+    if (!emailDelivered) {
+      try {
+        await fetch(`https://formsubmit.co/ajax/${TARGET_EMAIL}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            _subject: emailSubject,
+            _template: 'table',
+            _captcha: 'false',
+            'Heading': leadRecord.type === 'site_visit' ? '🏛️ PURANDAR HIGHLANDS — NEW SITE VISIT BOOKING' : '🏛️ PURANDAR HIGHLANDS — NEW LEAD INQUIRY',
+            'Customer Name': leadRecord.name,
+            'Mobile Number': `+91 ${cleanPhone}`,
+            'Email Address': leadRecord.email || 'Not Provided',
+            'Preferred Plot Size': leadRecord.plot || 'General Visit / Unspecified',
+            'Preferred Visit Date': leadRecord.date || 'Flexible / To be confirmed',
+            'Message / Notes': leadRecord.message || 'None',
+            'Language': leadRecord.lang === 'mr' ? 'Marathi' : 'English',
+            'Submission Time (IST)': istTime,
+            'Reference Lead ID': leadRecord.id,
+            'Direct Dial': `tel:+91${cleanPhone}`,
+            'WhatsApp Link': `https://wa.me/91${cleanPhone}`,
+          }),
+        });
+      } catch (fsErr) {
+        console.info('FormSubmit fallback dispatched note:', fsErr);
+      }
     }
 
     return res.status(200).json({
       success: true,
-      message: 'Lead received and queued successfully',
+      message: emailDelivered ? 'Lead sent to inbox via Resend successfully' : 'Lead received and queued',
       leadId: leadRecord.id,
+      deliveryMethod: emailDelivered ? 'resend' : 'fallback',
       timestamp: isoTimestamp,
     });
   } catch (error: any) {

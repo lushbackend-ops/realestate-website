@@ -68,7 +68,43 @@ export const submitLead = async (data: SubmitLeadData): Promise<LeadResponse> =>
     // localStorage may be unavailable in private browsing
   }
 
-  // 2. Direct FormSubmit submission (Primary email delivery to newpune.backend@gmail.com)
+  // 2. Primary pipeline: Vercel Serverless Function (/api/enquire) -> Resend
+  // Immune to client-side adblockers and CORS restrictions
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 7000);
+
+    const apiResponse = await fetch('/api/enquire', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...data,
+        phone: cleanPhone,
+        leadId,
+        formattedTimeIST: istTime,
+        timestamp: new Date().toISOString(),
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (apiResponse.ok) {
+      const resJson = await apiResponse.json();
+      console.log('[Lead Service] /api/enquire success:', resJson);
+      return {
+        success: true,
+        message: resJson.message || 'Lead submitted successfully',
+        leadId,
+      };
+    }
+  } catch (apiErr) {
+    console.warn('[Lead Service] /api/enquire network fallback (likely local dev):', apiErr);
+  }
+
+  // 3. Fallback: Direct FormSubmit submission (runs if /api/enquire is unreachable, e.g. local dev)
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
@@ -87,34 +123,15 @@ export const submitLead = async (data: SubmitLeadData): Promise<LeadResponse> =>
 
     if (response.ok) {
       const resJson = await response.json();
-      console.log('FormSubmit response:', resJson);
+      console.log('FormSubmit fallback response:', resJson);
       return {
         success: true,
-        message: 'Lead sent to newpune.backend@gmail.com successfully',
+        message: 'Lead sent to mailbox successfully',
         leadId,
       };
     }
   } catch (fsErr) {
-    console.warn('FormSubmit AJAX dispatch attempt note:', fsErr);
-  }
-
-  // 3. Fallback to /api/enquire if FormSubmit client dispatch had a network block
-  try {
-    await fetch('/api/enquire', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...data,
-        phone: cleanPhone,
-        leadId,
-        formattedTimeIST: istTime,
-        timestamp: new Date().toISOString(),
-      }),
-    });
-  } catch {
-    // silently continue
+    console.warn('FormSubmit fallback attempt note:', fsErr);
   }
 
   // Return success so user UI shows confirmation smoothly
